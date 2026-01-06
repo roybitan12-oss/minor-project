@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1767671264145",
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "password123"
+  },
+  {
+    "id": "1767672113239",
+    "name": "Debug User",
+    "email": "debug@example.com",
+    "password": "password123"
+  },
+  {
+    "id": "1767672321822",
+    "name": "Bitan Roy",
+    "email": "roybitan23@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": "1767673995932",
+    "name": "lvbq",
+    "email": "simple.curling337@aleeas.com",
+    "password": "123456"
+  },
+  {
+    "id": "1767689932259",
+    "name": "prince",
+    "email": "prince62067@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": "1767704482177",
+    "name": "Verification User",
+    "email": "verify@example.com",
+    "password": "password123"
+  }
+]

@@ -1,0 +1,41 @@
+{
+  "extends": [
+    "development"
+  ],
+  "hints": {
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "text-size-adjust",
+          "text-align: -webkit-match-parent",
+          "-webkit-overflow-scrolling",
+          "backdrop-filter",
+          "scrollbar-color"
+        ]
+      }
+    ],
+    "axe/text-alternatives": [
+      "default",
+      {
+        "image-alt": "off"
+      }
+    ],
+    "no-inline-styles": "off",
+    "axe/name-role-value": [
+      "default",
+      {
+        "link-name": "off"
+      }
+    ]
+  },
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not and_chr <= 142",
+    "not chrome <= 143",
+    "not edge <= 143",
+    "not opera <= 122",
+    "not samsung <= 29"
+  ]
+}

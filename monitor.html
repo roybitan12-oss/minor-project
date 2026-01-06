@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Monitor - Premium Dashboard</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-green: #34d399;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 50%);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 2rem;
+        }
+
+        .monitor-header {
+            padding: 3rem 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 3rem;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .monitor-header h1 {
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .monitor-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .card-header {
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header .badge {
+            background: var(--accent-blue);
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .log-list {
+            padding: 0;
+            margin: 0;
+            max-height: 500px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-blue) transparent;
+        }
+
+        .log-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .log-list::-webkit-scrollbar-thumb {
+            background: var(--accent-blue);
+            border-radius: 10px;
+        }
+
+        .log-item {
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .log-item:last-child {
+            border-bottom: none;
+        }
+
+        .log-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .log-content {
+            flex-grow: 1;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .log-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .log-time {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .log-message {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Auth specific styles */
+        .type-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-left: 8px;
+        }
+
+        .type-tag.signup {
+            background: rgba(52, 211, 153, 0.1);
+            color: #34d399;
+        }
+
+        .type-tag.login {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="monitor-header">
+        <div class="container">
+            <h1><i class="fa fa-shuttle-launch"></i> System Control Center</h1>
+            <p>Real-time analytics & activity monitoring for Bitan's Portfolio</p>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- Chat Logs Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fa fa-comments-o"></i> Assistant Live Feed</h3>
+                <span class="badge" id="chat-count">0 messages</span>
+            </div>
+            <div id="log-list" class="log-list">
+                <div class="empty-state">
+                    <i class="fa fa-inbox"></i>
+                    <p>No chat activity detected yet...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auth activity Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fa fa-shield"></i> Security & Auth</h3>
+                <span class="badge" id="auth-count">0 events</span>
+            </div>
+            <div id="auth-log-list" class="log-list">
+                <div class="empty-state">
+                    <i class="fa fa-user-secret"></i>
+                    <p>Waiting for authentication logs...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('log-list');
+        const authContainer = document.getElementById('auth-log-list');
+        const chatBadge = document.getElementById('chat-count');
+        const authBadge = document.getElementById('auth-count');
+
+        let lastChatId = 0;
+        let lastAuthCount = 0;
+        let knownChatMessages = new Set();
+        let knownAuthEvents = new Set();
+
+        function createChatRow(log) {
+            const item = document.createElement('div');
+            item.className = 'log-item';
+            const isBot = log.sender.toLowerCase() === 'bot';
+
+            item.innerHTML = `
+                <div class="log-icon" style="background: ${isBot ? 'rgba(129, 140, 248, 0.1)' : 'rgba(56, 189, 248, 0.1)'}; color: ${isBot ? '#818cf8' : '#38bdf8'}">
+                    <i class="fa ${isBot ? 'fa-android' : 'fa-user'}"></i>
+                </div>
+                <div class="log-content">
+                    <div class="log-header">
+                        <span class="log-name">${log.sender.toUpperCase()}</span>
+                        <span class="log-time">${new Date(log.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div class="log-message">${log.message}</div>
+                </div>
+            `;
+            return item;
+        }
+
+        function createAuthRow(log) {
+            const item = document.createElement('div');
+            item.className = 'log-item';
+            const typeClass = log.type.toLowerCase();
+            const icon = log.type === 'SIGNUP' ? 'fa-user-plus' : 'fa-sign-in';
+
+            item.innerHTML = `
+                <div class="log-icon" style="background: ${log.type === 'SIGNUP' ? 'rgba(52, 211, 153, 0.1)' : 'rgba(56, 189, 248, 0.1)'}; color: ${log.type === 'SIGNUP' ? '#34d399' : '#38bdf8'}">
+                    <i class="fa ${icon}"></i>
+                </div>
+                <div class="log-content">
+                    <div class="log-header">
+                        <span class="log-name">${log.name || 'Anonymous User'} <span class="type-tag ${typeClass}">${log.type}</span></span>
+                        <span class="log-time">${new Date(log.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div class="log-message">${log.email} | Access from portal</div>
+                </div>
+            `;
+            return item;
+        }
+
+        async function fetchLogs() {
+            try {
+                const apiBase = window.APP_CONFIG ? window.APP_CONFIG.getApiUrl() : '';
+                // Fetch Chats
+                const chatRes = await fetch(apiBase + '/api/chat/logs');
+                const chats = await chatRes.json();
+
+                let newChats = 0;
+                chats.forEach(chat => {
+                    const key = `${chat.timestamp}-${chat.message}`;
+                    if (!knownChatMessages.has(key)) {
+                        if (knownChatMessages.size === 0) chatContainer.innerHTML = '';
+                        chatContainer.prepend(createChatRow(chat));
+                        knownChatMessages.add(key);
+                        newChats++;
+                    }
+                });
+                chatBadge.textContent = `${knownChatMessages.size} messages`;
+
+                // Fetch Auth
+                const authRes = await fetch(apiBase + '/api/auth/logs');
+                const auths = await authRes.json();
+
+                auths.forEach(auth => {
+                    const key = `${auth.timestamp}-${auth.email}-${auth.type}`;
+                    if (!knownAuthEvents.has(key)) {
+                        if (knownAuthEvents.size === 0) authContainer.innerHTML = '';
+                        authContainer.prepend(createAuthRow(auth));
+                        knownAuthEvents.add(key);
+                    }
+                });
+                authBadge.textContent = `${knownAuthEvents.size} events`;
+
+            } catch (e) {
+                console.error('Polling failed:', e);
+            }
+        }
+
+        // Start polling
+        setInterval(fetchLogs, 2000);
+        fetchLogs();
+    </script>
+    <script src="js/config.js"></script>
+</body>
+
+</html>
